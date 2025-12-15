@@ -28,9 +28,6 @@ Sisteminizde aşağıdaki yazılımların kurulu olması gerekir:
 * **Python 3.12+**
 * **Node.js (LTS önerilir)**
 * **npm** (Node.js ile birlikte gelir)
-
-### Opsiyonel
-
 * Git (projeyi klonlamak için)
 
 ---
