@@ -1,0 +1,43 @@
+[
+  { "word1": "hızlı", "word2": "süratli", "relation": "es" },
+  { "word1": "yüksek", "word2": "alçak", "relation": "zit" },
+  { "word1": "mutlu", "word2": "neşeli", "relation": "es" },
+  { "word1": "zor", "word2": "kolay", "relation": "zit" },
+  { "word1": "sessiz", "word2": "gürültülü", "relation": "zit" },
+  { "word1": "akıllı", "word2": "zeki", "relation": "es" },
+
+  { "word1": "güçlü", "word2": "kuvvetli", "relation": "es" },
+  { "word1": "genç", "word2": "yaşlı", "relation": "zit" },
+  { "word1": "cesur", "word2": "korkak", "relation": "zit" },
+  { "word1": "temiz", "word2": "kirli", "relation": "zit" },
+  { "word1": "zengin", "word2": "fakir", "relation": "zit" },
+  { "word1": "dürüst", "word2": "samimi", "relation": "es" },
+
+  { "word1": "kısa", "word2": "uzun", "relation": "zit" },
+  { "word1": "kolay", "word2": "basit", "relation": "es" },
+  { "word1": "soğuk", "word2": "sıcak", "relation": "zit" },
+  { "word1": "kalabalık", "word2": "tenha", "relation": "zit" },
+  { "word1": "hızlı", "word2": "yavaş", "relation": "zit" },
+  { "word1": "güzel", "word2": "çirkin", "relation": "zit" },
+
+  { "word1": "akşam", "word2": "gece", "relation": "es" },
+  { "word1": "başarılı", "word2": "başarısız", "relation": "zit" },
+  { "word1": "çalışkan", "word2": "tembel", "relation": "zit" },
+  { "word1": "sakin", "word2": "huzurlu", "relation": "es" },
+  { "word1": "kibar", "word2": "nazik", "relation": "es" },
+  { "word1": "kaba", "word2": "nezaketsiz", "relation": "es" },
+
+  { "word1": "aydınlık", "word2": "karanlık", "relation": "zit" },
+  { "word1": "eski", "word2": "yeni", "relation": "zit" },
+  { "word1": "zor", "word2": "çetin", "relation": "es" },
+  { "word1": "mutlu", "word2": "üzgün", "relation": "zit" },
+  { "word1": "doğru", "word2": "yanlış", "relation": "zit" },
+  { "word1": "yakın", "word2": "uzak", "relation": "zit" },
+
+  { "word1": "cesaret", "word2": "yiğitlik", "relation": "es" },
+  { "word1": "tehlikeli", "word2": "riskli", "relation": "es" },
+  { "word1": "ağır", "word2": "hafif", "relation": "zit" },
+  { "word1": "sert", "word2": "yumuşak", "relation": "zit" },
+  { "word1": "hatalı", "word2": "yanlış", "relation": "es" },
+  { "word1": "bilinçli", "word2": "şuurlu", "relation": "es" }
+]

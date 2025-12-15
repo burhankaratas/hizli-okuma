@@ -1,0 +1,127 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+    <title> Anlama Refleksi Egzersizi </title>
+{% endblock head %}
+
+{% block settings %}
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="card shadow-sm" style="max-width: 420px; width: 100%; background-color:#1e293b; color:#e5e7eb; border:none;">
+    <div class="card-body p-4">
+
+      <h4 class="mb-2 text-center">Zıt – Eş Anlam Egzersizi</h4>
+
+      <p class="text-muted text-center mb-4" style="color:#cbd5e1;">
+        Kelimeler kısa süreliğine gösterilir.  
+        Eş anlamlıysa <strong>sağ ok</strong>, zıt anlamlıysa <strong>sol ok</strong>.
+      </p>
+
+      <div class="mb-4">
+        <label for="speedSelect" class="form-label fw-semibold">
+          Gösterim Süresi (milisaniye)
+        </label>
+
+        <select class="form-select" id="speedSelect" style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;">
+          <option value="100">100 ms</option>
+          <option value="150">150 ms</option>
+          <option value="200">200 ms</option>
+          <option value="250">250 ms</option>
+          <option value="300" selected>300 ms</option>
+          <option value="350">350 ms</option>
+          <option value="400">400 ms</option>
+          <option value="500">500 ms</option>
+          <option value="600">600 ms</option>
+        </select>
+
+        <div class="form-text" style="color:#94a3b8;">
+          Daha düşük değerler kelimelerin daha kısa süre görünmesi anlamına gelir.
+        </div>
+      </div>
+
+      <div class="d-grid">
+        <button class="btn btn-primary btn-lg" id="startButton">
+          Başlat
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock settings %}
+
+{% block exercise %}
+<div class="container-fluid vh-100 d-flex flex-column position-relative">
+
+  <!-- Çıkış (Sol Üst) -->
+  <div class="position-absolute top-0 start-0 p-4">
+    <a href="/" style="color:#cbd5e1;">
+      <i class="bi bi-box-arrow-left"></i> Çıkış
+    </a>
+  </div>
+
+  <!-- İstatistikler (Sağ Üst) -->
+  <div class="position-absolute top-0 end-0 p-4 text-end">
+    <div class="fw-semibold">
+      Doğru: <span id="correctCount">0</span>
+    </div>
+    <div class="fw-semibold">
+      Yanlış: <span id="wrongCount">0</span>
+    </div>
+    <div class="text-muted small" style="color:#94a3b8;">
+      Toplam: <span id="totalCount">0</span>
+    </div>
+  </div>
+
+  <!-- Ana Egzersiz Alanı -->
+  <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+
+    <!-- Kelimeler -->
+    <div id="wordArea" class="d-flex gap-5 user-select-none">
+      <div class="fs-1 fw-bold" id="wordLeft"></div>
+      <div class="fs-1 fw-bold" id="wordRight"></div>
+    </div>
+
+  </div>
+
+  <!-- Geri Bildirim (Doğru / Yanlış) -->
+  <div class="position-absolute top-50 start-50 translate-middle text-center d-none"
+       id="feedback">
+
+    <div class="fs-2 fw-bold">
+      Doğru Bildiniz
+    </div>
+
+  </div>
+
+  <!-- Alt Yönerge -->
+  <div class="text-center text-muted pb-4 small" style="color:#94a3b8;">
+    <i class="bi bi-arrow-right"></i> Eş anlamlı |
+    <i class="bi bi-arrow-left"></i> Zıt anlamlı |
+    <i class="bi bi-arrow-return-left"></i> Devam
+  </div>
+
+</div>
+{% endblock exercise %}
+
+{% block finish %}
+<div id="finish" style="display:none; text-align:center;">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <h2>Tebrikler 🎉</h2>
+    <p>Egzersizi tamamladın.</p>
+    <a href="/" id="goHome" style="background-color:#0d6efd; color:white; padding:10px 22px; border-radius:8px; text-decoration:none;">Anasayfaya dön</a>
+</div>
+
+<style>
+    #finish a:hover {
+      background-color: #0b5ed7;
+    }
+
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+    }
+</style>
+{% endblock finish %}
+
+{% block main %}
+<script src="../../static/js/anlam_refleksi/main.js"></script>
+{% endblock main %}

@@ -1,0 +1,12 @@
+{
+  "name": "hizli-okuma",
+  "version": "1.0.0",
+  "description": "Hızlı Okuma Uygulaması",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^26.0.0"
+  }
+}
