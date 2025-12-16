@@ -24,14 +24,13 @@ let total = 0;
 
 let word_datas = [];
 let currentIndex = 0;
-let hideTimer = null;
+let responseTimer = null;
 let speed = 0;
 let currentQuestion = null;
 let answered = false;
 
 startButton.addEventListener("click", start);
 
-// 🔀 Fisher–Yates Shuffle
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -49,7 +48,7 @@ function start() {
         .then(response => response.json())
         .then(data => {
             word_datas = data;
-            shuffleArray(word_datas); // 👈 her seferinde karışık
+            shuffleArray(word_datas);
             currentIndex = 0;
             startExercise();
         });
@@ -64,37 +63,44 @@ function startExercise() {
 }
 
 function showNextQuestion() {
-    if (hideTimer) clearTimeout(hideTimer);
+    if (responseTimer) clearTimeout(responseTimer);
 
     answered = false;
-
     currentQuestion = word_datas[currentIndex];
 
     wordLeft.textContent = currentQuestion.word1;
     wordRight.textContent = currentQuestion.word2;
-
     feedback.textContent = "";
+    feedback.classList.add("d-none");
 
-    hideTimer = setTimeout(() => {
-        wordLeft.textContent = "";
-        wordRight.textContent = "";
+    responseTimer = setTimeout(() => {
+        if (!answered) {
+            handleTimeout();
+        }
     }, speed);
 }
 
+function handleTimeout() {
+    answered = true;
+    wrong++;
+    feedback.textContent = "Süre Doldu! ✖";
+    feedback.className = "text-warning fs-2 fw-bold";
+    feedback.classList.remove("d-none");
+    
+    updateStats();
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 400);
+}
+
 document.addEventListener("keydown", function (event) {
-    if (!currentQuestion) return;
+    if (!currentQuestion || answered) return;
 
     if (event.key === "ArrowRight") {
         checkAnswer("es");
-    }
-
-    if (event.key === "ArrowLeft") {
+    } else if (event.key === "ArrowLeft") {
         checkAnswer("zit");
-    }
-
-    if (event.key === "Enter") {
-        if (!answered) return;
-        nextQuestion();
     }
 });
 
@@ -110,29 +116,35 @@ function normalize(value) {
 }
 
 function checkAnswer(answer) {
-    if (answered) return;
     answered = true;
+    if (responseTimer) clearTimeout(responseTimer);
 
     const correctRelation = normalize(currentQuestion.relation);
     const userAnswer = normalize(answer);
 
+    feedback.classList.remove("d-none");
+
     if (correctRelation === userAnswer) {
         correct++;
         feedback.textContent = "Doğru ✔";
-        feedback.className = "text-success";
+        feedback.className = "text-success fs-2 fw-bold";
     } else {
         wrong++;
         feedback.textContent = "Yanlış ✖";
-        feedback.className = "text-danger";
+        feedback.className = "text-danger fs-2 fw-bold";
     }
 
     updateStats();
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 400);
 }
 
 function nextQuestion() {
     currentIndex++;
 
-    if (currentIndex >= word_datas.length) {
+    if (currentIndex >= 140) {
         finishExercise();
         return;
     }

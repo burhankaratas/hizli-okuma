@@ -1,2 +1,7 @@
 ## 0.0.1
 - İlk MVP sürüm
+
+## 0.0.2
+- anlam_refleksi yaklaşık 5 dakika sürecek şekilde güncellendi.
+- anlam_refleksi mantığı değiştirildi.
+

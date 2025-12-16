@@ -16,7 +16,6 @@
   { "word1": "arka", "word2": "ön", "relation": "zit" },
   { "word1": "ak", "word2": "kara", "relation": "zit" },
   { "word1": "aç", "word2": "tok", "relation": "zit" },
-
   { "word1": "batı", "word2": "doğu", "relation": "zit" },
   { "word1": "bulanık", "word2": "duru", "relation": "zit" },
   { "word1": "büyük", "word2": "küçük", "relation": "zit" },
@@ -29,7 +28,6 @@
   { "word1": "bolluk", "word2": "kıtlık", "relation": "zit" },
   { "word1": "boş", "word2": "dolu", "relation": "zit" },
   { "word1": "borç", "word2": "alacak", "relation": "zit" },
-
   { "word1": "cimri", "word2": "cömert", "relation": "zit" },
   { "word1": "cılız", "word2": "gürbüz", "relation": "zit" },
   { "word1": "cevap", "word2": "soru", "relation": "zit" },
@@ -39,7 +37,6 @@
   { "word1": "çabuk", "word2": "yavaş", "relation": "zit" },
   { "word1": "çekmek", "word2": "itmek", "relation": "zit" },
   { "word1": "çift", "word2": "tek", "relation": "zit" },
-
   { "word1": "doğal", "word2": "yapay", "relation": "zit" },
   { "word1": "dahil", "word2": "hariç", "relation": "zit" },
   { "word1": "dost", "word2": "düşman", "relation": "zit" },
@@ -47,58 +44,45 @@
   { "word1": "dar", "word2": "geniş", "relation": "zit" },
   { "word1": "düz", "word2": "eğri", "relation": "zit" },
   { "word1": "donuk", "word2": "parlak", "relation": "zit" },
-
   { "word1": "erken", "word2": "geç", "relation": "zit" },
   { "word1": "erkek", "word2": "kadın", "relation": "zit" },
   { "word1": "eski", "word2": "yeni", "relation": "zit" },
   { "word1": "eksik", "word2": "fazla", "relation": "zit" },
   { "word1": "esaret", "word2": "özgürlük", "relation": "zit" },
   { "word1": "evet", "word2": "hayır", "relation": "zit" },
-
   { "word1": "fakir", "word2": "zengin", "relation": "zit" },
-
   { "word1": "gece", "word2": "gündüz", "relation": "zit" },
   { "word1": "güzel", "word2": "çirkin", "relation": "zit" },
   { "word1": "geçmiş", "word2": "gelecek", "relation": "zit" },
   { "word1": "gelir", "word2": "gider", "relation": "zit" },
   { "word1": "genç", "word2": "yaşlı", "relation": "zit" },
   { "word1": "geri", "word2": "ileri", "relation": "zit" },
-
   { "word1": "hızlı", "word2": "yavaş", "relation": "zit" },
   { "word1": "hırçın", "word2": "uysal", "relation": "zit" },
   { "word1": "ıslak", "word2": "kuru", "relation": "zit" },
-
   { "word1": "ince", "word2": "kalın", "relation": "zit" },
   { "word1": "indirim", "word2": "zam", "relation": "zit" },
-
   { "word1": "kâr", "word2": "zarar", "relation": "zit" },
   { "word1": "kolay", "word2": "zor", "relation": "zit" },
   { "word1": "kış", "word2": "yaz", "relation": "zit" },
   { "word1": "korkak", "word2": "cesur", "relation": "zit" },
   { "word1": "kirli", "word2": "temiz", "relation": "zit" },
-
   { "word1": "nazik", "word2": "kaba", "relation": "zit" },
   { "word1": "neşeli", "word2": "üzgün", "relation": "zit" },
   { "word1": "negatif", "word2": "pozitif", "relation": "zit" },
-
   { "word1": "ölü", "word2": "diri", "relation": "zit" },
   { "word1": "ödül", "word2": "ceza", "relation": "zit" },
   { "word1": "övmek", "word2": "yermek", "relation": "zit" },
   { "word1": "özel", "word2": "resmî", "relation": "zit" },
-
   { "word1": "pahalı", "word2": "ucuz", "relation": "zit" },
-
   { "word1": "sabah", "word2": "akşam", "relation": "zit" },
   { "word1": "sağ", "word2": "sol", "relation": "zit" },
-
   { "word1": "temiz", "word2": "kirli", "relation": "zit" },
   { "word1": "toplama", "word2": "çıkarma", "relation": "zit" },
   { "word1": "tutsak", "word2": "özgür", "relation": "zit" },
-
   { "word1": "cahil", "word2": "bilgisiz", "relation": "es" },
   { "word1": "caka", "word2": "gösteriş", "relation": "es" },
   { "word1": "camekan", "word2": "vitrin", "relation": "es" },
-
   { "word1": "abide", "word2": "anıt", "relation": "es" },
   { "word1": "acayip", "word2": "garip", "relation": "es" },
   { "word1": "acıma", "word2": "merhamet", "relation": "es" },
@@ -135,7 +119,6 @@
   { "word1": "arıza", "word2": "bozukluk", "relation": "es" },
   { "word1": "arka", "word2": "geri", "relation": "es" },
   { "word1": "armağan", "word2": "hediye", "relation": "es" },
-
   { "word1": "vaka", "word2": "olay", "relation": "es" },
   { "word1": "vakit", "word2": "zaman", "relation": "es" },
   { "word1": "varlıklı", "word2": "zengin", "relation": "es" },
@@ -145,7 +128,6 @@
   { "word1": "vesika", "word2": "belge", "relation": "es" },
   { "word1": "viraj", "word2": "dönemeç", "relation": "es" },
   { "word1": "vücut", "word2": "gövde", "relation": "es" },
-
   { "word1": "yalın", "word2": "sade", "relation": "es" },
   { "word1": "yan", "word2": "taraf", "relation": "es" },
   { "word1": "yanıt", "word2": "cevap", "relation": "es" },
@@ -162,12 +144,10 @@
   { "word1": "yaşam", "word2": "hayat", "relation": "es" },
   { "word1": "yaşam", "word2": "ömür", "relation": "es" },
   { "word1": "yaşlı", "word2": "ihtiyar", "relation": "es" },
-
   { "word1": "rüya", "word2": "düş", "relation": "es" },
   { "word1": "rastlantı", "word2": "tesadüf", "relation": "es" },
   { "word1": "rey", "word2": "oy", "relation": "es" },
   { "word1": "rüzgar", "word2": "yel", "relation": "es" },
-
   { "word1": "problem", "word2": "sorun", "relation": "es" },
   { "word1": "sade", "word2": "yalın", "relation": "es" },
   { "word1": "sağlık", "word2": "sıhhat", "relation": "es" },
@@ -178,14 +158,12 @@
   { "word1": "sır", "word2": "giz", "relation": "es" },
   { "word1": "sürat", "word2": "hız", "relation": "es" },
   { "word1": "sevinç", "word2": "mutluluk", "relation": "es" },
-
   { "word1": "şahıs", "word2": "kişi", "relation": "es" },
   { "word1": "şahit", "word2": "tanık", "relation": "es" },
   { "word1": "şans", "word2": "talih", "relation": "es" },
   { "word1": "şehir", "word2": "kent", "relation": "es" },
   { "word1": "şeref", "word2": "onur", "relation": "es" },
   { "word1": "şüphe", "word2": "kuşku", "relation": "es" },
-
   { "word1": "tabiat", "word2": "doğa", "relation": "es" },
   { "word1": "tabii", "word2": "doğal", "relation": "es" },
   { "word1": "talebe", "word2": "öğrenci", "relation": "es" },
