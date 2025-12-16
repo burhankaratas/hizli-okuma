@@ -84,7 +84,7 @@ function handleTimeout() {
     answered = true;
     wrong++;
     feedback.textContent = "Süre Doldu! ✖";
-    feedback.className = "text-warning fs-2 fw-bold";
+    feedback.className = "position-absolute text-warning fs-5 fw-bold"; 
     feedback.classList.remove("d-none");
     
     updateStats();
@@ -127,11 +127,11 @@ function checkAnswer(answer) {
     if (correctRelation === userAnswer) {
         correct++;
         feedback.textContent = "Doğru ✔";
-        feedback.className = "text-success fs-2 fw-bold";
+        feedback.className = "position-absolute text-success fs-5 fw-bold";
     } else {
         wrong++;
         feedback.textContent = "Yanlış ✖";
-        feedback.className = "text-danger fs-2 fw-bold";
+        feedback.className = "position-absolute text-danger fs-5 fw-bold";
     }
 
     updateStats();
