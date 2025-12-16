@@ -34,4 +34,4 @@ def modul(module_name):
     return render_template(f"/modules/{module_name}.html")
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

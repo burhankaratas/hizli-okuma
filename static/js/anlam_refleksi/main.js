@@ -5,6 +5,7 @@ settings_body.style.display = "block";
 exercise_body.style.display = "none";
 
 const speedSelect = document.getElementById("speedSelect");
+const durationInput = document.getElementById("durationInput"); // Yeni
 const startButton = document.getElementById("startButton");
 
 const correctCount = document.getElementById("correctCount");
@@ -26,6 +27,7 @@ let word_datas = [];
 let currentIndex = 0;
 let responseTimer = null;
 let speed = 0;
+let totalTarget = 0; 
 let currentQuestion = null;
 let answered = false;
 
@@ -40,6 +42,9 @@ function shuffleArray(array) {
 
 function start() {
     speed = Number(speedSelect.value);
+    const requestedSeconds = Number(durationInput.value);
+
+    totalTarget = Math.round((requestedSeconds * 1000) / speed);
 
     settings_body.style.display = "none";
     exercise_body.style.display = "block";
@@ -66,7 +71,7 @@ function showNextQuestion() {
     if (responseTimer) clearTimeout(responseTimer);
 
     answered = false;
-    currentQuestion = word_datas[currentIndex];
+    currentQuestion = word_datas[currentIndex % word_datas.length]; 
 
     wordLeft.textContent = currentQuestion.word1;
     wordRight.textContent = currentQuestion.word2;
@@ -84,7 +89,7 @@ function handleTimeout() {
     answered = true;
     wrong++;
     feedback.textContent = "Süre Doldu! ✖";
-    feedback.className = "position-absolute text-warning fs-5 fw-bold"; 
+    feedback.className = "position-absolute text-warning fs-5 fw-bold";
     feedback.classList.remove("d-none");
     
     updateStats();
@@ -144,7 +149,7 @@ function checkAnswer(answer) {
 function nextQuestion() {
     currentIndex++;
 
-    if (currentIndex >= 140) {
+    if (currentIndex >= totalTarget) {
         finishExercise();
         return;
     }

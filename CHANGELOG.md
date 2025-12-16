@@ -8,3 +8,6 @@
 ## 0.0.3
 - anlam_refleksi yazılar büyütüldü. Kayma hatası düzeltildi.
 - Anasayfa güncellendi.
+
+## 0.0.4
+- anlam_refleksi istenilen kadar süre çalışması için güncellendi.
