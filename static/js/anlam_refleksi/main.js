@@ -1,3 +1,5 @@
+document.addEventListener('DOMContentLoaded', () => {
+    
 const settings_body = document.getElementById("settings");
 const exercise_body = document.getElementById("exercise");
 
@@ -169,3 +171,5 @@ function finishExercise() {
     finish_body.style.display = "block";
     currentQuestion = null;
 }
+
+});
