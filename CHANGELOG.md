@@ -11,3 +11,7 @@
 
 ## 0.0.4
 - anlam_refleksi istenilen kadar süre çalışması için güncellendi.
+
+## 0.0.5
+- anlam_refleksi kelime odaklı yapıdan süre odaklı yapıya geçildi.
+- anlam_refleksi arayüzü iyileştirildi.
