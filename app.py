@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash
+from flask import Flask, render_template
 from dotenv import load_dotenv
 import os
 app = Flask(__name__)
