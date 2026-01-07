@@ -15,3 +15,6 @@
 ## 0.0.5
 - anlam_refleksi kelime odaklı yapıdan süre odaklı yapıya geçildi.
 - anlam_refleksi arayüzü iyileştirildi.
+
+## 0.0.6
+- anlam_refleksi data arttırıldı.
