@@ -1,0 +1,199 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+    <title> Matematik Refleksi Egzersizi </title>
+{% endblock head %}
+
+{% block settings %}
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="card shadow-sm" style="max-width: 420px; width: 100%; background-color:#1e293b; color:#e5e7eb; border:none;">
+    <div class="card-body p-4">
+
+      <h4 class="mb-2 text-center">Tek – Çift Matematik Egzersizi</h4>
+
+      <p class="text-muted text-center mb-4" style="color:#cbd5e1;">
+        İşlem kısa süreliğine gösterilir.  
+        Sonuç <strong>çift</strong> ise <strong>sağ ok</strong>, <strong>tek</strong> ise <strong>sol ok</strong>.
+      </p>
+
+      <div class="mb-4">
+        <label for="speedSelect" class="form-label fw-semibold">
+          Gösterim Süresi (milisaniye)
+        </label>
+
+        <select class="form-select" id="speedSelect" style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;">
+          <option value="600">600 ms</option>
+          <option value="800">800 ms</option>
+          <option value="1000">1000 ms</option>
+          <option value="1200">1200 ms</option>
+          <option value="1400" selected>1400 ms</option>
+          <option value="1600">1600 ms</option>
+          <option value="1800">1800 ms</option>
+          <option value="2000">2000 ms</option>
+          <option value="2200">2200 ms</option>
+        </select>
+
+        <div class="form-text" style="color:#94a3b8;">
+          Daha düşük değerler işlemin daha kısa süre görünmesi anlamına gelir.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="rangeSelect" class="form-label fw-semibold">
+          Sayı Aralığı (0 – max)
+        </label>
+        <select class="form-select" id="rangeSelect" style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;">
+          <option value="10">0 - 10</option>
+          <option value="20" selected>0 - 20</option>
+          <option value="50">0 - 50</option>
+          <option value="100">0 - 100</option>
+        </select>
+        <div class="form-text" style="color:#94a3b8;">
+          Toplama, çıkarma ve çarpma işlemlerinde bu aralık kullanılır.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="durationInput" class="form-label fw-semibold">
+          Egzersiz Süresi (Saniye)
+        </label>
+        <input type="number" class="form-select" id="durationInput" value="60" min="10" style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;">
+        <div class="form-text" style="color:#94a3b8;">
+          Egzersizin yaklaşık kaç saniye sürmesini istersiniz?
+        </div>
+      </div>
+
+      <div class="d-grid">
+        <button class="btn btn-primary btn-lg" id="startButton">
+          Başlat
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock settings %}
+
+{% block exercise %}
+<div class="container-fluid vh-100 d-flex flex-column position-relative">
+
+  <!-- Çıkış (Sol Üst) -->
+  <div class="position-absolute top-0 start-0 p-4" style="z-index: 999;">
+    <a href="/" style="color:#cbd5e1;">
+      <i class="bi bi-box-arrow-left"></i> Çıkış
+    </a>
+  </div>
+
+  <!-- Orta Üst -->
+  <div class="position-absolute top-0 start-50 translate-middle-x p-4 text-center">
+    <h2>İletken Hızlı Okuma <br> <span class="text-warning">Ömer Karataş</span>
+    </h2>
+  </div>
+
+  <div class="position-absolute top-0 end-0 p-4 d-flex gap-4 align-items-start">
+
+    <!-- SÜRE -->
+    <div class="text-center">
+      <div class="fw-semibold text-warning" style="font-size: 22px;">
+        <span id="timeLeft">60</span>
+      </div>
+      <div class="text-muted small" style="color:#94a3b8;">
+        saniye
+      </div>
+    </div>
+
+    <!-- İSTATİSTİK -->
+    <div class="text-end">
+      <div class="fw-semibold">
+        Doğru: <span id="correctCount">0</span>
+      </div>
+      <div class="fw-semibold">
+        Yanlış: <span id="wrongCount">0</span>
+      </div>
+      <div class="text-muted small" style="color:#94a3b8;">
+        Toplam: <span id="totalCount">0</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ana Egzersiz Alanı -->
+  <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center position-relative">
+
+      <div id="expression" class="fw-bold user-select-none" style="font-size: 145px;"></div>
+
+      <div id="feedback" class="position-absolute fw-bold d-none" style="bottom: 35%;"></div>
+
+  </div>
+
+  <!-- Alt Yönerge -->
+  <div class="text-center pb-4 text-warning" style="font-size: 20px;">
+    <i class="bi bi-arrow-left"></i> Tek | 
+     Çift  <i class="bi bi-arrow-right"></i> 
+  </div>
+
+</div>
+{% endblock exercise %}
+
+{% block finish %}
+<div id="finish" class="container vh-100 justify-content-center align-items-center" style="display:none;">
+  <div class="card shadow-sm text-center"
+       style="max-width: 420px; width:100%; background-color:#1e293b; color:#e5e7eb; border:none;">
+    
+    <div class="card-body p-4">
+
+      <h3 class="mb-2">Tebrikler 🎉</h3>
+      <p class="text-muted mb-4" style="color:#94a3b8;">
+        Egzersizi tamamladın
+      </p>
+
+      <!-- İSTATİSTİKLER -->
+      <div class="d-flex justify-content-around mb-4">
+
+        <div>
+          <div class="fw-bold text-warning" style="font-size: 22px;">
+            <span id="finishTime">60</span>
+          </div>
+          <div class="text-muted small" style="color:#94a3b8;">
+            saniye
+          </div>
+        </div>
+
+        <div>
+          <div class="fw-bold text-success" style="font-size: 22px;">
+            <span id="finishCorrect">0</span>
+          </div>
+          <div class="text-muted small" style="color:#94a3b8;">
+            doğru
+          </div>
+        </div>
+
+        <div>
+          <div class="fw-bold text-danger" style="font-size: 22px;">
+            <span id="finishWrong">0</span>
+          </div>
+          <div class="text-muted small" style="color:#94a3b8;">
+            yanlış
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-muted small mb-4" style="color:#94a3b8;">
+        Toplam soru: <span id="finishTotal">0</span>
+      </div>
+
+      <a href="/" id="goHome"
+         style="background-color:#0d6efd; color:white; padding:10px 22px;
+                border-radius:8px; text-decoration:none;">
+        Anasayfaya dön
+      </a>
+
+    </div>
+  </div>
+</div>
+{% endblock finish %}
+
+{% block main %}
+<script src="../../static/js/matematik_refleksi/main.js"></script>
+{% endblock main %}

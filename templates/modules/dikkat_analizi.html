@@ -1,0 +1,235 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+    <title> Dikkat Analizi Egzersizi </title>
+{% endblock head %}
+
+{% block settings %}
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="card shadow-sm" style="max-width: 460px; width: 100%; background-color:#1e293b; color:#e5e7eb; border:none;">
+    <div class="card-body p-4">
+
+      <h4 class="mb-2 text-center">Dikkat Analizi Egzersizi</h4>
+
+      <p class="text-muted text-center mb-4" style="color:#cbd5e1;">
+        Dizi soldan sağa yanıp söner.  
+        Dizi bittikten sonra sırayla 3 soru cevaplanır.
+      </p>
+
+      <div class="mb-4">
+        <label for="speedSelect" class="form-label fw-semibold">
+          Flaş Süresi (milisaniye)
+        </label>
+
+        <select class="form-select" id="speedSelect" style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;">
+          <option value="300">300 ms</option>
+          <option value="400">400 ms</option>
+          <option value="500" selected>500 ms</option>
+          <option value="600">600 ms</option>
+          <option value="700">700 ms</option>
+        </select>
+
+        <div class="form-text" style="color:#94a3b8;">
+          Daha düşük değerler daha hızlı yanıp sönme demektir.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="lengthInput" class="form-label fw-semibold">
+          Dizi Uzunluğu (5 - 15)
+        </label>
+        <input type="number" class="form-select" id="lengthInput" value="5" min="5" max="15"
+               style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;">
+        <div class="form-text" style="color:#94a3b8;">
+          Dizi uzunluğu arttıkça zorluk artar.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="roundSelect" class="form-label fw-semibold">
+          Oyun Sayısı
+        </label>
+        <select class="form-select" id="roundSelect" style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;">
+           <option value="1">1 Oyun</option>
+          <option value="2">2 Oyun</option>
+          <option value="3">3 Oyun</option>
+          <option value="4">4 Oyun</option>
+          <option value="5" selected>5 Oyun</option>
+          <option value="6">6 Oyun</option>
+          <option value="7">7 Oyun</option>
+          <option value="8">8 Oyun</option>
+          <option value="9">9 Oyun</option>
+          <option value="10">10 Oyun</option>
+
+        </select>
+        <div class="form-text" style="color:#94a3b8;">
+          Her el için bir dizi ve üç soru çözersin.
+        </div>
+      </div>
+
+      <div class="d-grid">
+        <button class="btn btn-primary btn-lg" id="startButton">
+          Başlat
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock settings %}
+
+{% block exercise %}
+<div class="container-fluid vh-100 d-flex flex-column position-relative">
+
+  <!-- Çıkış (Sol Üst) -->
+  <div class="position-absolute top-0 start-0 p-4" style="z-index: 999;">
+    <a href="/" style="color:#cbd5e1;">
+      <i class="bi bi-box-arrow-left"></i> Çıkış
+    </a>
+  </div>
+
+  <!-- Orta Üst -->
+  <div class="position-absolute top-0 start-50 translate-middle-x p-4 text-center">
+    <h2>İletken Hızlı Okuma <br> <span class="text-warning">Ömer Karataş</span>
+    </h2>
+  </div>
+
+  <div class="position-absolute top-0 end-0 p-4 d-flex gap-4 align-items-start">
+
+    <!-- SÜRE -->
+    <div class="text-center">
+      <div class="fw-semibold text-warning" style="font-size: 22px;">
+        <span id="roundLeft">0</span>
+      </div>
+      <div class="text-muted small" style="color:#94a3b8;">
+        el kaldı
+      </div>
+    </div>
+
+    <!-- İSTATİSTİK -->
+    <div class="text-end">
+      <div class="fw-semibold">
+        Doğru: <span id="correctCount">0</span>
+      </div>
+      <div class="fw-semibold">
+        Yanlış: <span id="wrongCount">0</span>
+      </div>
+      <div class="text-muted small" style="color:#94a3b8;">
+        Toplam: <span id="totalCount">0</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ana Egzersiz Alanı -->
+  <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center position-relative">
+
+    <div id="sequenceRow" class="sequence-row user-select-none"></div>
+
+    <div id="questionArea" class="mt-4 text-center">
+      <div id="questionText" class="fw-bold" style="font-size: 28px;"></div>
+      <div class="mt-3 d-flex justify-content-center gap-2">
+        <input id="answerInput" class="form-control form-control-lg" style="max-width: 260px; background-color:#0f172a; color:#e5e7eb; border-color:#334155;" />
+        <button id="answerButton" class="btn btn-success btn-lg">Cevapla</button>
+      </div>
+      <div id="answerHelp" class="text-muted small mt-2" style="color:#94a3b8;"></div>
+    </div>
+
+    <div id="feedback" class="position-absolute fw-bold d-none" style="bottom: 28%;"></div>
+
+  </div>
+
+</div>
+{% endblock exercise %}
+
+{% block finish %}
+<div id="finish" class="container vh-100 justify-content-center align-items-center" style="display:none;">
+  <div class="card shadow-sm text-center"
+       style="max-width: 420px; width:100%; background-color:#1e293b; color:#e5e7eb; border:none;">
+    
+    <div class="card-body p-4">
+
+      <h3 class="mb-2">Tebrikler 🎉</h3>
+      <p class="text-muted mb-4" style="color:#94a3b8;">
+        Egzersizi tamamladın
+      </p>
+
+      <!-- İSTATİSTİKLER -->
+      <div class="d-flex justify-content-around mb-4">
+
+        <div>
+          <div class="fw-bold text-warning" style="font-size: 22px;">
+            <span id="finishRounds">0</span>
+          </div>
+          <div class="text-muted small" style="color:#94a3b8;">
+            el
+          </div>
+        </div>
+
+        <div>
+          <div class="fw-bold text-success" style="font-size: 22px;">
+            <span id="finishCorrect">0</span>
+          </div>
+          <div class="text-muted small" style="color:#94a3b8;">
+            doğru
+          </div>
+        </div>
+
+        <div>
+          <div class="fw-bold text-danger" style="font-size: 22px;">
+            <span id="finishWrong">0</span>
+          </div>
+          <div class="text-muted small" style="color:#94a3b8;">
+            yanlış
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-muted small mb-4" style="color:#94a3b8;">
+        Toplam soru: <span id="finishTotal">0</span>
+      </div>
+
+      <a href="/" id="goHome"
+         style="background-color:#0d6efd; color:white; padding:10px 22px;
+                border-radius:8px; text-decoration:none;">
+        Anasayfaya dön
+      </a>
+
+    </div>
+  </div>
+</div>
+{% endblock finish %}
+
+{% block main %}
+<style>
+  .sequence-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+  }
+
+  .sequence-slot {
+    width: 140px;
+    height: 198px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 90px;
+    font-weight: 700;
+    color: #e5e7eb;
+    opacity: 0.25;
+    transition: opacity 0.12s ease;
+  }
+
+  .sequence-slot.active {
+    opacity: 1;
+  }
+</style>
+<script src="../../static/js/dikkat_analizi/main.js"></script>
+{% endblock main %}

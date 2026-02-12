@@ -18,3 +18,22 @@
 
 ## 0.0.6
 - anlam_refleksi data arttırıldı.
+
+## 0.0.7
+- matematik_refleksi modülü eklendi.
+- tek/çift değerlendirme mantığı ve hız-süre-aralık ayarları eklendi.
+
+## 0.0.8
+- dikkat_refleksi modülüne orta sayı eklendi.
+- orta sayı için yukarı ok değerlendirmesi eklendi.
+
+## 0.0.9
+- dikkat_refleksi sayı gösterimi yavaşlatıldı.
+- sayı aralığı seçimi basamak seçeneklerine dönüştürüldü.
+- orta sayıyı opsiyonel kapatma seçeneği eklendi.
+
+## 0.0.10
+- dikkat_analizi modülü eklendi (flaş dizi ve soru akışı).
+
+## 0.0.11
+- dikkat_analizi süre ayarı kaldırıldı, el sayısı eklendi.
