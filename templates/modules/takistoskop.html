@@ -1,0 +1,178 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+    <title>Takistoskop Egzersizi</title>
+{% endblock head %}
+
+{% block settings %}
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="card shadow-sm" style="max-width: 420px; width: 100%; background-color:#1e293b; color:#e5e7eb; border:none;">
+    <div class="card-body p-4">
+
+      <h4 class="mb-2 text-center">Takistoskop Egzersizi</h4>
+
+      <p class="text-muted text-center mb-4" style="color:#cbd5e1;">
+        Ekranda bir anlığına beliren kelimeleri okuyun ve tam olarak yazın.
+        Kelimeleri yazıp <strong>Enter</strong>'a basın.
+      </p>
+
+      <div class="mb-4">
+        <label for="charCountInput" class="form-label fw-semibold">
+          Harf Sayısı (toplam karakter)
+        </label>
+        <input
+          type="number"
+          class="form-control"
+          id="charCountInput"
+          value="5"
+          min="1"
+          max="30"
+          style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;"
+        >
+          <div class="form-text" style="color:#94a3b8;">
+          1 ile 30 arasında. Boşluklar sayılmaz — örneğin "elma at" = 6 harf.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="flashSpeedInput" class="form-label fw-semibold">
+          Flash Süresi (milisaniye)
+        </label>
+        <select
+          class="form-select"
+          id="flashSpeedInput"
+          style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;"
+        >
+          <option value="200">200 ms (çok hızlı)</option>
+          <option value="400">400 ms (hızlı)</option>
+          <option value="600">600 ms</option>
+          <option value="800" selected>800 ms (orta)</option>
+          <option value="1000">1000 ms</option>
+          <option value="1200">1200 ms</option>
+          <option value="1500">1500 ms</option>
+          <option value="2000">2000 ms (yavaş)</option>
+        </select>
+        <div class="form-text" style="color:#94a3b8;">
+          Kelimelerin ekranda kalma süresi.
+        </div>
+      </div>
+
+      <div class="d-grid">
+        <button class="btn btn-primary btn-lg" id="startButton">
+          Başlat
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock settings %}
+
+{% block exercise %}
+<div class="container-fluid vh-100 d-flex flex-column position-relative">
+
+  <!-- Çıkış (Sol Üst) -->
+  <div class="position-absolute top-0 start-0 p-4" style="z-index: 999;">
+    <a href="/" style="color:#cbd5e1;">
+      <i class="bi bi-box-arrow-left"></i> Çıkış
+    </a>
+  </div>
+
+  <!-- Başlık (Orta Üst) -->
+  <div class="position-absolute top-0 start-50 translate-middle-x p-4 text-center">
+    <h2>İletken Hızlı Okuma <br> <span class="text-warning">Ömer Karataş</span></h2>
+  </div>
+
+  <!-- İstatistik (Sağ Üst) -->
+  <div class="position-absolute top-0 end-0 p-4 text-end">
+    <div class="fw-bold text-warning" style="font-size:1.1rem; min-height:1.6rem;">
+      <span id="charDisplay">5</span> harf
+    </div>
+    <div class="fw-semibold">
+      Doğru: <span id="correctCount">0</span>
+    </div>
+    <div class="fw-semibold">
+      Yanlış: <span id="wrongCount">0</span>
+    </div>
+    <div class="text-muted small" style="color:#94a3b8;">
+      Toplam: <span id="totalCount">0</span>
+    </div>
+  </div>
+
+  <!-- Ana Egzersiz Alanı -->
+  <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center gap-4">
+
+    <!-- Flash Kutusu -->
+    <div id="flashArea" class="flash-box">
+      <span id="flashWords" class="flash-text user-select-none"></span>
+    </div>
+
+    <!-- Input + Feedback -->
+    <div class="d-flex flex-column align-items-center gap-2" style="width: 100%; max-width: 560px;">
+      <input
+        type="text"
+        id="answerInput"
+        class="form-control text-center answer-input"
+        placeholder="Gördüğünüz kelimeleri yazın…"
+        autocomplete="off"
+        spellcheck="false"
+        style="background-color:#0f172a; color:#e5e7eb; border-color:#334155; font-size: 1.2rem; padding: 12px;"
+      >
+      <div id="feedback" class="fw-bold fs-5" style="min-height: 1.8rem;"></div>
+      <div id="hint" class="fw-semibold fs-6 text-warning" style="min-height: 1.5rem;"></div>
+      <div class="text-muted small" style="color:#94a3b8;">
+        Cevabı gir &amp; kontrol et → <kbd style="background:#1e293b; color:#e5e7eb; border:1px solid #475569;">Enter</kbd>
+        &nbsp;·&nbsp;
+        Sonraki → <kbd style="background:#1e293b; color:#e5e7eb; border:1px solid #475569;">Enter</kbd>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock exercise %}
+
+{% block finish %}{% endblock finish %}
+
+{% block main %}
+<style>
+  /* ── Flash kutusu ── */
+  .flash-box {
+    width: min(860px, 92vw);
+    min-height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #334155;
+    border-radius: 12px;
+    background: #1e293b;
+    transition: border-color 0.05s;
+  }
+
+  .flash-box.blink-warn {
+    border-color: #38bdf8;
+  }
+
+  .flash-box.showing {
+    border-color: #38bdf8;
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.35);
+  }
+
+  .flash-text {
+    font-weight: 700;
+    color: #e5e7eb;
+    letter-spacing: 0.05em;
+    text-align: center;
+    white-space: nowrap;
+    padding: 0 24px;
+  }
+
+  .answer-input:focus {
+    outline: none;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+  }
+</style>
+
+<script src="../../static/js/takistoskop/main.js"></script>
+{% endblock main %}
