@@ -24,6 +24,7 @@ let allWords     = [];
 let wordsByLen   = {};   // { 3: ["bir","göz",...], 4: ["elma",...], ... }
 let currentWords = [];
 let flashTimer   = null;
+let dataReady    = false;
 
 // Durum makinesi:
 //   "idle"     → başlamadı
@@ -52,6 +53,9 @@ function normalize(str) {
 }
 
 // ── Veri yükleme & indeksleme ─────────────────────────────────
+startButton.disabled = true;
+startButton.textContent = "Yükleniyor...";
+
 fetch('/static/data/takistoskop.json')
     .then(r => r.json())
     .then(data => {
@@ -62,6 +66,9 @@ fetch('/static/data/takistoskop.json')
             if (!wordsByLen[len]) wordsByLen[len] = [];
             wordsByLen[len].push(w);
         });
+        dataReady = true;
+        startButton.disabled = false;
+        startButton.textContent = "Başlat";
     })
     .catch(() => {
         allWords = ["elma","masa","kitap","yıldız","bulut","at","el","bir","göz"];
@@ -70,6 +77,9 @@ fetch('/static/data/takistoskop.json')
             if (!wordsByLen[len]) wordsByLen[len] = [];
             wordsByLen[len].push(w);
         });
+        dataReady = true;
+        startButton.disabled = false;
+        startButton.textContent = "Başlat";
     });
 
 // ── Harf sayısına göre kelime kombinasyonu seç ────────────────
@@ -130,6 +140,8 @@ function shuffleArr(arr) {
 
 // ── Başlat ────────────────────────────────────────────────────
 startButton.addEventListener("click", () => {
+    if (!dataReady || Object.keys(wordsByLen).length === 0) return;
+
     const cc = Math.min(Math.max(parseInt(charCountInput.value) || 5, 1), 30);
     charCountInput.value = cc;
     currentCharCount = cc;
@@ -230,9 +242,9 @@ function checkAnswer() {
     state = "feedback";
     answerInput.readOnly = true;
 
-    const userInput  = answerInput.value.trim().split(/\s+/).map(normalize);
-    const correctArr = currentWords.map(normalize);
-    const isCorrect  = arraysEqual(userInput, correctArr);
+    const userInput  = normalizeSentence(answerInput.value);
+    const correctAns = normalizeSentence(currentWords.join(" "));
+    const isCorrect  = userInput === correctAns;
 
     total++;
     if (isCorrect) {
@@ -258,6 +270,10 @@ function checkAnswer() {
 function arraysEqual(a, b) {
     if (a.length !== b.length) return false;
     return a.every((v, i) => v === b[i]);
+}
+
+function normalizeSentence(str) {
+    return normalize(str).replace(/\s+/g, ' ');
 }
 
 function updateStats() {
