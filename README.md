@@ -1,148 +1,76 @@
-# Hızlı Okuma Uygulaması (Flask + Electron)
+# Hızlı Okuma
 
-Bu proje, **Flask (Python)** tabanlı bir web uygulamasını **Electron (JavaScript)** ile masaüstü uygulaması olarak çalıştıran, modüler yapıda bir **hızlı okuma uygulamasıdır**.
+> Flask sunucusunu Electron masaüstü kabuğuyla birleştiren, modüler yapıda bir hızlı okuma uygulaması.
 
-Flask tarafı arka planda lokal bir web sunucusu olarak çalışır, Electron ise bu sunucuyu masaüstü uygulaması şeklinde kullanıcıya gösterir. Uygulama, `templates/modules` klasörü altındaki HTML dosyalarını otomatik olarak algılar ve modül olarak listeler.
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.1-000000?logo=flask&logoColor=white)
+![Electron](https://img.shields.io/badge/Electron-26-47848F?logo=electron&logoColor=white)
+![Lisans](https://img.shields.io/badge/license-MIT-green)
 
----
+Okurken göz satır sonuna geldiğinde geri döner ve her dönüşte zaman kaybedilir.
+Bu uygulama; göz kaslarını çalıştıran, karar süresini kısaltan ve okuma tekniğini
+değiştiren modüllerle bu kaybı azaltmayı hedefler.
 
-## Mimari Genel Bakış
+Flask arka planda yalnızca yerel (`127.0.0.1`) bir sunucu olarak çalışır; Electron
+ise onu masaüstü uygulaması olarak gösterir. **İnternet bağlantısı gerekmez,
+veriler cihazdan çıkmaz.**
 
-* **Python / Flask**: Uygulama mantığı ve sayfa render işlemleri
-* **Electron**: Masaüstü uygulama kabuğu (UI görüntüleme)
-* **start.py**: Tüm sistemi yöneten başlatıcı (orchestrator)
+## Özellikler
 
-  * Python sanal ortamını oluşturur
-  * Python bağımlılıklarını kurar
-  * Flask uygulamasını başlatır
-  * Electron uygulamasını çalıştırır
+- **Modüler sistem** — `templates/modules/` içine eklenen her `.html` dosyası
+  otomatik olarak bir modül olarak algılanır; backend'e dokunmak gerekmez.
+- **Takistoskop** — kısa süreli hızlı görsel/kelime algısı çalışması.
+- **Anlam refleksi** — anlamayı düşürmeden hızı artırmaya yönelik metin çalışması.
+- **Dikkat analizi & dikkat refleksi** — odak ve tepki süresi çalışmaları.
+- **Matematik refleksi** — zihinsel işlem hızını geliştiren egzersiz.
+- **Tek komutla kurulum** — `start.py` tüm süreci yönetir.
 
----
+## Mimari
 
-## Gereksinimler
+| Katman | Teknoloji | Görev |
+| --- | --- | --- |
+| Backend | Python 3.12, Flask | Sayfa render, modül keşfi, iş mantığı |
+| Masaüstü kabuğu | Electron (JavaScript) | Flask sunucusunu masaüstü penceresinde gösterir |
+| Başlatıcı | `start.py` | venv oluşturur, bağımlılıkları kurar, sunucuyu ve Electron'u başlatır |
 
-Sisteminizde aşağıdaki yazılımların kurulu olması gerekir:
-
-### Zorunlu
-
-* **Python 3.12+**
-* **Node.js (LTS önerilir)**
-* **npm** (Node.js ile birlikte gelir)
-* Git (projeyi klonlamak için)
-
----
+```
+.
+├── app.py                 # Flask uygulaması
+├── start.py               # Başlatıcı (orchestrator)
+├── main.js                # Electron giriş noktası
+├── package.json           # Electron bağımlılıkları
+├── requirements.txt       # Python bağımlılıkları
+├── static/
+│   ├── data/              # Modül verileri (JSON)
+│   └── js/                # Modül mantıkları
+└── templates/
+    ├── index.html
+    ├── layout.html
+    └── modules/           # Her .html dosyası bir modül
+```
 
 ## Kurulum
 
-### 1. Projeyi Klonlayın
+Gereksinimler: **Python 3.12+**, **Node.js (LTS)** ve **npm**.
 
 ```bash
-git clone <repo-url>
-cd proje-klasoru
-```
-
----
-
-### 2. Ortam Değişkenleri (.env)
-
-Proje kök dizininde bir `.env` dosyası oluşturun:
-
-```env
-SECRET_KEY=guclu_bir_gizli_anahtar
-```
-
-> `SECRET_KEY`, Flask session ve güvenlik mekanizmaları için gereklidir.
-
----
-
-### 3. Uygulamayı Başlatın
-
-Tüm kurulum ve çalıştırma işlemleri **tek bir dosya** üzerinden yapılır:
-
-```bash
+git clone https://github.com/burhankaratas/hizli-okuma.git
+cd hizli-okuma
+cp .env.example .env      # SECRET_KEY değerini düzenleyin
 python3 start.py
 ```
 
-Bu komut şunları otomatik olarak yapar:
+`start.py` sanal ortamı oluşturur, Python ve Node bağımlılıklarını kurar,
+Flask sunucusunu başlatır ve Electron penceresini açar. İlk çalıştırma
+biraz uzun sürebilir.
 
-* Python sanal ortamını (`venv`) oluşturur
-* `requirements.txt` içindeki Python bağımlılıklarını kurar
-* Node.js ve npm kontrolü yapar
-* `npm install` çalıştırır
-* Flask sunucusunu başlatır
-* Electron masaüstü uygulamasını açar
+## Yeni modül ekleme
 
-İlk çalıştırma biraz zaman alabilir.
+1. `templates/modules/` içine yeni bir `.html` dosyası ekleyin.
+2. Gerekirse `static/js/` ve `static/data/` altına mantık ve verisini koyun.
 
----
-
-## Proje Yapısı
-
-```text
-.
-├── app.py                # Flask uygulaması
-├── start.py              # Başlatıcı (orchestrator)
-├── main.js               # Electron ana dosyası
-├── package.json          # Electron / JS bağımlılıkları
-├── package-lock.json     # Kilitlenmiş npm bağımlılıkları
-├── requirements.txt      # Python bağımlılıkları
-├── templates/
-│   ├── index.html
-│   └── modules/
-│       ├── modul1.html
-│       ├── modul2.html
-│       └── ...
-├── static/               # CSS / JS / görseller
-├── .env                  # Ortam değişkenleri (Git'e dahil edilmez)
-└── README.md
-```
-
----
-
-## Modül Sistemi
-
-* `templates/modules` klasörüne eklenen her `.html` dosyası **otomatik olarak bir modül** olarak algılanır
-* Ana sayfada bu modüller dinamik olarak listelenir
-* Yeni modül eklemek için backend koduna dokunmaya gerek yoktur
-
-Örnek:
-
-```text
-templates/modules/hizli_okuma_1.html
-```
-
-Bu dosya otomatik olarak arayüzde görünür.
-
----
-
-## Geliştirme Notları
-
-* Flask yalnızca **local** olarak çalışır (`127.0.0.1`)
-* Uygulama internet bağlantısı gerektirmez
-* Electron sadece görüntüleme amaçlıdır, iş mantığı Python tarafındadır
-
----
-
-## Git Ignore
-
-Aşağıdaki dosya ve klasörler Git'e dahil edilmez:
-
-* `venv/`
-* `.venv/`
-* `node_modules/`
-* `__pycache__/`
-* `.env`
-* `dist/`
-* `build/`
-
----
+Modül, arayüzde otomatik olarak listelenir.
 
 ## Lisans
 
-Bu proje kişisel / eğitim amaçlı geliştirilmiştir. Lisanslama ihtiyacına göre düzenlenebilir.
-
----
-
-## Not
-
-Bu proje, basit bir MVP olarak tasarlanmıştır. Mimari; ileride otomatik güncelleme, modül bazlı ayarlar veya kullanıcı profilleri gibi özellikler eklemeye uygundur.
+[MIT](LICENSE) © 2026 Mahmut Burhan Karataş
