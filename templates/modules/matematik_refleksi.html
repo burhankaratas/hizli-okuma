@@ -43,8 +43,8 @@
           Sayı Aralığı (0 – max)
         </label>
         <select class="form-select" id="rangeSelect" style="background-color:#0f172a; color:#e5e7eb; border-color:#334155;">
-          <option value="10">0 - 10</option>
-          <option value="20" selected>0 - 20</option>
+          <option value="10" selected>0 - 10</option>
+          <option value="20">0 - 20</option>
           <option value="50">0 - 50</option>
           <option value="100">0 - 100</option>
         </select>
@@ -122,15 +122,10 @@
 
       <div id="expression" class="fw-bold user-select-none" style="font-size: 145px;"></div>
 
-      <div id="feedback" class="position-absolute fw-bold d-none" style="bottom: 35%;"></div>
+<div id="feedback" class="position-absolute fw-bold d-none" style="bottom: 35%;"></div>
 
   </div>
 
-  <!-- Alt Yönerge -->
-  <div class="text-center pb-4 text-warning" style="font-size: 20px;">
-    <i class="bi bi-arrow-left"></i> Tek | 
-     Çift  <i class="bi bi-arrow-right"></i> 
-  </div>
 
 </div>
 {% endblock exercise %}
@@ -195,5 +190,16 @@
 {% endblock finish %}
 
 {% block main %}
+<style>
+  .flash-once {
+    animation: flashOnce 0.9s steps(2, end) 1 forwards;
+  }
+  @keyframes flashOnce {
+    0%   { opacity: 1; }
+    49%  { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+</style>
 <script src="../../static/js/matematik_refleksi/main.js"></script>
 {% endblock main %}

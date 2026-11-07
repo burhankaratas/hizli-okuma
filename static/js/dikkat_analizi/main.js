@@ -126,12 +126,22 @@ function prepareSequenceSlots(length) {
     sequenceRow.innerHTML = "";
     const maxWidth = Math.min(144, Math.floor(1200 / length));
     for (let i = 0; i < length; i++) {
+        const wrapper = document.createElement("div");
+        wrapper.style.cssText = "display:flex; flex-direction:column; align-items:center; gap:4px;";
+
+        const label = document.createElement("div");
+        label.textContent = String(i + 1);
+        label.style.cssText = "color:#94a3b8; font-size:22px; font-weight:600;";
+
         const slot = document.createElement("div");
         slot.className = "sequence-slot";
         slot.style.width = `${maxWidth}px`;
         slot.style.height = `${Math.max(170, Math.floor(maxWidth * 1.4))}px`;
         slot.style.fontSize = `${Math.max(70, Math.floor(maxWidth * 0.7))}px`;
-        sequenceRow.appendChild(slot);
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(slot);
+        sequenceRow.appendChild(wrapper);
     }
 }
 
@@ -140,7 +150,7 @@ function showSequence() {
     questionArea.style.display = "none";
     feedback.classList.add("d-none");
 
-    const slots = Array.from(sequenceRow.children);
+    const slots = Array.from(sequenceRow.querySelectorAll('.sequence-slot'));
     let index = 0;
 
     const onMs = Math.floor(flashMs * 0.6);

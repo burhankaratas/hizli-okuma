@@ -18,8 +18,8 @@ const wrongCount   = document.getElementById("wrongCount");
 const totalCount   = document.getElementById("totalCount");
 const timeLeftEl   = document.getElementById("timeLeft");
 
-const expressionEl = document.getElementById("expression");
-const feedback     = document.getElementById("feedback");
+const expressionEl  = document.getElementById("expression");
+const feedback      = document.getElementById("feedback");
 
 const finishCorrect = document.getElementById("finishCorrect");
 const finishWrong   = document.getElementById("finishWrong");
@@ -122,8 +122,9 @@ function showNextQuestion(maxValue) {
     currentAnswerIsEven = question.isEven;
 
     expressionEl.textContent = question.text;
+    restartFlash(expressionEl);
 
-    feedback.textContent = "";
+feedback.textContent = "";
     feedback.classList.add("d-none");
 
     responseTimer = setTimeout(() => {
@@ -131,6 +132,12 @@ function showNextQuestion(maxValue) {
             handleTimeout(maxValue);
         }
     }, speed);
+}
+
+function restartFlash(el) {
+    el.classList.remove("flash-once");
+    void el.offsetWidth;
+    el.classList.add("flash-once");
 }
 
 function handleTimeout(maxValue) {
