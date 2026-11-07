@@ -3,6 +3,9 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import check_password_hash
 from dotenv import load_dotenv
 import os
+import urllib.request
+import urllib.parse
+import json
 
 load_dotenv()
 
@@ -44,11 +47,33 @@ def load_user(user_id):
     return None
 
 
+def _verify_turnstile(token):
+    secret = os.getenv("TURNSTILE_SECRET_KEY", "")
+    if not secret:
+        return True  # Turnstile anahtarı yoksa geç (lokal geliştirme)
+    data = urllib.parse.urlencode({"secret": secret, "response": token}).encode()
+    req = urllib.request.Request(
+        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        data=data,
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            result = json.loads(resp.read())
+            return result.get("success", False)
+    except Exception:
+        return False
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("home"))
     if request.method == "POST":
+        token = request.form.get("cf-turnstile-response", "")
+        if not _verify_turnstile(token):
+            flash("Bot doğrulaması başarısız. Lütfen tekrar deneyin.", "danger")
+            return render_template("login.html")
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
         for user in _load_users():
@@ -56,7 +81,7 @@ def login():
                 login_user(user, remember=True)
                 return redirect(url_for("home"))
         flash("Geçersiz e-posta veya şifre.", "danger")
-    return render_template("login.html")
+    return render_template("login.html", turnstile_site_key=os.getenv("TURNSTILE_SITE_KEY", ""))
 
 
 @app.route("/logout")
