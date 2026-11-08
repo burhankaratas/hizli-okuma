@@ -19,9 +19,10 @@ const wrongCount   = document.getElementById("wrongCount");
 const totalCount   = document.getElementById("totalCount");
 const timeLeftEl   = document.getElementById("timeLeft");
 
-const leftSideEl  = document.getElementById("leftSide");
-const rightSideEl = document.getElementById("rightSide");
-const feedback    = document.getElementById("feedback");
+const exprContainer = document.getElementById("exprContainer");
+const leftSideEl    = document.getElementById("leftSide");
+const rightSideEl   = document.getElementById("rightSide");
+const feedback      = document.getElementById("feedback");
 
 const finishCorrect = document.getElementById("finishCorrect");
 const finishWrong   = document.getElementById("finishWrong");
@@ -33,19 +34,22 @@ let wrong   = 0;
 let total   = 0;
 let speed   = 0;
 
-let answered        = false;
-let isFirstQuestion = false;
-let exerciseActive  = false;
+let answered         = false;
+let isFirstQuestion  = false;
+let exerciseActive   = false;
 let remainingSeconds = 0;
 
-let prevActual    = 0;
-let currentActual = 0;
-let selectedOp    = "mix";
-let maxVal        = 10;
+let prevActual       = 0;
+let currentActual    = 0;
+let shownValue       = 0;
+let lastEquationText = "";
+let selectedOp       = "mix";
+let maxVal           = 10;
 
 let responseTimer     = null;
 let exerciseTimer     = null;
 let countdownInterval = null;
+let transitionTimer   = null;
 
 startButton.addEventListener("click", start);
 
@@ -65,63 +69,50 @@ function computeResult(a, op, b) {
     return a * b;
 }
 
+// Normalize for duplicate detection: commutative ops treated same regardless of order
+function normalizeText(a, op, b) {
+    if (op === "+" || op === "×") return `${Math.min(a, b)} ${op} ${Math.max(a, b)}`;
+    return `${a} ${op} ${b}`;
+}
+
 function buildEquation() {
+    for (let i = 0; i < 100; i++) {
+        const op = pickOp(selectedOp);
+        let a = getRandomInt(0, maxVal);
+        let b = getRandomInt(0, maxVal);
+        if (op === "-" && b > a) [a, b] = [b, a];
+        if (normalizeText(a, op, b) !== lastEquationText) {
+            const result = computeResult(a, op, b);
+            return { a, op, b, result, text: `${a} ${op} ${b}` };
+        }
+    }
+    // Fallback: return anyway
     const op = pickOp(selectedOp);
     let a = getRandomInt(0, maxVal);
     let b = getRandomInt(0, maxVal);
     if (op === "-" && b > a) [a, b] = [b, a];
-    const result = computeResult(a, op, b);
-    return { a, op, b, result, text: `${a} ${op} ${b}` };
+    return { a, op, b, result: computeResult(a, op, b), text: `${a} ${op} ${b}` };
 }
 
-function buildCorrectEquation(target) {
-    const ops = selectedOp === "mix" ? ["+", "-", "×"] : [selectedOp];
-    const shuffled = ops.slice().sort(() => Math.random() - 0.5);
-
-    for (const op of shuffled) {
-        if (op === "+") {
-            const aMin = Math.max(0, target - maxVal);
-            const aMax = Math.min(maxVal, target);
-            if (aMin > aMax) continue;
-            const a = getRandomInt(aMin, aMax);
-            const b = target - a;
-            if (b >= 0 && b <= maxVal) return { a, op, b, result: target, text: `${a} ${op} ${b}` };
-        } else if (op === "-") {
-            const bMax = maxVal - target;
-            if (bMax < 0) continue;
-            const b = getRandomInt(0, bMax);
-            const a = target + b;
-            if (a <= maxVal) return { a, op, b, result: target, text: `${a} ${op} ${b}` };
-        } else {
-            if (target === 0) {
-                const a = getRandomInt(0, maxVal);
-                return { a, op: "×", b: 0, result: 0, text: `${a} × 0` };
-            }
-            const factors = [];
-            for (let i = 1; i <= maxVal; i++) {
-                if (target % i === 0 && target / i <= maxVal) factors.push([i, target / i]);
-            }
-            if (factors.length === 0) continue;
-            const [a, b] = factors[getRandomInt(0, factors.length - 1)];
-            return { a, op: "×", b, result: target, text: `${a} × ${b}` };
-        }
+// Returns a value ≠ prevActual, ≥ 0
+function buildDecoy(prev, curr) {
+    // ~50%: show currentActual as a trap (the user who forgot the rule would compute this)
+    if (Math.random() < 0.5 && curr !== prev) return curr;
+    // ~50%: a nearby number (prev ± 1..5)
+    for (let i = 0; i < 50; i++) {
+        const delta = getRandomInt(1, 5) * (Math.random() < 0.5 ? 1 : -1);
+        const val   = prev + delta;
+        if (val >= 0 && val !== prev) return val;
     }
-    return buildWrongEquation(target);
-}
-
-function buildWrongEquation(target) {
-    for (let i = 0; i < 100; i++) {
-        const eq = buildEquation();
-        if (eq.result !== target) return eq;
-    }
-    return buildEquation();
+    return curr !== prev ? curr : Math.max(0, prev + 1);
 }
 
 function start() {
     speed      = Number(speedSelect.value);
     maxVal     = Number(rangeSelect.value);
     selectedOp = opSelect.value;
-    const durationSeconds = Number(durationInput.value);
+    const raw  = Number(durationInput.value);
+    const durationSeconds = (raw > 0 && isFinite(raw)) ? raw : 60;
 
     settings_body.style.display = "none";
     exercise_body.style.display = "block";
@@ -132,6 +123,7 @@ function start() {
 
 function startExercise(durationSeconds) {
     correct = 0; wrong = 0; total = 0;
+    lastEquationText = "";
     updateStats();
 
     exerciseActive   = true;
@@ -156,18 +148,20 @@ function showFirstEquation() {
     if (!exerciseActive) return;
 
     const eq = buildEquation();
-    prevActual = eq.result;
+    prevActual       = eq.result;
+    lastEquationText = normalizeText(eq.a, eq.op, eq.b);
 
-    leftSideEl.textContent  = eq.text;
-    rightSideEl.textContent = `= ${eq.result}`;
-    rightSideEl.style.color = "#94a3b8";
+    exprContainer.style.opacity = "1";
+    leftSideEl.textContent      = eq.text;
+    rightSideEl.textContent     = `= ${eq.result}`;
+    rightSideEl.style.color     = "#94a3b8";
 
     feedback.textContent = "Başlangıç";
     feedback.className   = "position-absolute text-muted fs-5 fw-semibold";
     feedback.classList.remove("d-none");
 
     isFirstQuestion = true;
-    answered = true;
+    answered        = true;
 
     responseTimer = setTimeout(() => {
         if (exerciseActive) showNextQuestion();
@@ -176,24 +170,37 @@ function showFirstEquation() {
 
 function showNextQuestion() {
     if (!exerciseActive) return;
-    if (responseTimer) clearTimeout(responseTimer);
+    if (responseTimer)   clearTimeout(responseTimer);
+    if (transitionTimer) clearTimeout(transitionTimer);
 
-    const eq = Math.random() < 0.5 ? buildCorrectEquation(prevActual) : buildWrongEquation(prevActual);
-    currentActual = eq.result;
+    exprContainer.style.opacity = "0";
 
-    leftSideEl.textContent  = eq.text;
-    rightSideEl.textContent = `= ${prevActual}`;
-    rightSideEl.style.color = "#fbbf24";
+    transitionTimer = setTimeout(() => {
+        if (!exerciseActive) return;
 
-    feedback.textContent = "";
-    feedback.classList.add("d-none");
+        const eq         = buildEquation();
+        currentActual    = eq.result;
+        lastEquationText = normalizeText(eq.a, eq.op, eq.b);
 
-    isFirstQuestion = false;
-    answered = false;
+        // 50% correct (shownValue = prevActual), 50% wrong (decoy ≠ prevActual)
+        shownValue = Math.random() < 0.5 ? prevActual : buildDecoy(prevActual, currentActual);
 
-    responseTimer = setTimeout(() => {
-        if (!answered && exerciseActive) handleTimeout();
-    }, speed);
+        leftSideEl.textContent  = eq.text;
+        rightSideEl.textContent = `= ${shownValue}`;
+        rightSideEl.style.color = "#fbbf24";
+
+        feedback.textContent = "";
+        feedback.classList.add("d-none");
+
+        exprContainer.style.opacity = "1";
+
+        isFirstQuestion = false;
+        answered        = false;
+
+        responseTimer = setTimeout(() => {
+            if (!answered && exerciseActive) handleTimeout();
+        }, speed);
+    }, 150);
 }
 
 function handleTimeout() {
@@ -203,15 +210,16 @@ function handleTimeout() {
     feedback.className   = "position-absolute text-warning fs-5 fw-bold";
     feedback.classList.remove("d-none");
     updateStats();
-    prevActual = currentActual;
-    setTimeout(() => { if (exerciseActive) showNextQuestion(); }, 400);
+    prevActual    = currentActual;
+    responseTimer = setTimeout(() => { if (exerciseActive) showNextQuestion(); }, 400);
 }
 
 document.addEventListener("keydown", (event) => {
+    if (event.repeat) return;
     if (!exerciseActive || isFirstQuestion || answered) return;
-
-    if (event.key === "ArrowRight") checkAnswer(true);
-    else if (event.key === "ArrowLeft")  checkAnswer(false);
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    checkAnswer(event.key === "ArrowRight");
 });
 
 function checkAnswer(userSaysCorrect) {
@@ -219,7 +227,8 @@ function checkAnswer(userSaysCorrect) {
     if (responseTimer) clearTimeout(responseTimer);
     feedback.classList.remove("d-none");
 
-    const isCorrect = (currentActual === prevActual);
+    // Correct = shownValue matches the previous equation's real result
+    const isCorrect = (shownValue === prevActual);
 
     if (userSaysCorrect === isCorrect) {
         correct++;
@@ -232,9 +241,8 @@ function checkAnswer(userSaysCorrect) {
     }
 
     updateStats();
-    prevActual = currentActual;
-
-    setTimeout(() => { if (exerciseActive) showNextQuestion(); }, 400);
+    prevActual    = currentActual;
+    responseTimer = setTimeout(() => { if (exerciseActive) showNextQuestion(); }, 400);
 }
 
 function updateStats() {
@@ -246,9 +254,10 @@ function updateStats() {
 
 function finishExercise() {
     exerciseActive = false;
-    if (exerciseTimer) clearTimeout(exerciseTimer);
-    if (responseTimer) clearTimeout(responseTimer);
+    if (exerciseTimer)     clearTimeout(exerciseTimer);
+    if (responseTimer)     clearTimeout(responseTimer);
     if (countdownInterval) clearInterval(countdownInterval);
+    if (transitionTimer)   clearTimeout(transitionTimer);
 
     finishCorrect.textContent = correct;
     finishWrong.textContent   = wrong;
@@ -258,5 +267,81 @@ function finishExercise() {
     exercise_body.style.display = "none";
     finish_body.style.display   = "flex";
 }
+
+// Console simulation: runSimulation(500) to verify logic
+window.runSimulation = function(turns = 500) {
+    console.log(`=== Zincirleme Matematik Simülasyonu (${turns} tur) ===`);
+
+    const rInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+    const ops  = ["+", "-", "×"];
+    const calc = (a, op, b) => op === "+" ? a + b : op === "-" ? a - b : a * b;
+    const norm = (a, op, b) => (op === "+" || op === "×")
+        ? `${Math.min(a,b)} ${op} ${Math.max(a,b)}`
+        : `${a} ${op} ${b}`;
+
+    function simBuild(lastText, maxV, opMode) {
+        for (let i = 0; i < 100; i++) {
+            const op = opMode === "mix" ? ops[rInt(0, 2)] : opMode;
+            let a = rInt(0, maxV), b = rInt(0, maxV);
+            if (op === "-" && b > a) [a, b] = [b, a];
+            if (norm(a, op, b) !== lastText) return { a, op, b, result: calc(a, op, b) };
+        }
+        const op = ops[rInt(0, 2)];
+        let a = rInt(0, maxV), b = rInt(0, maxV);
+        if (op === "-" && b > a) [a, b] = [b, a];
+        return { a, op, b, result: calc(a, op, b) };
+    }
+
+    function simDecoy(prev, curr) {
+        if (Math.random() < 0.5 && curr !== prev) return curr;
+        for (let i = 0; i < 50; i++) {
+            const d = rInt(1, 5) * (Math.random() < 0.5 ? 1 : -1);
+            const v = prev + d;
+            if (v >= 0 && v !== prev) return v;
+        }
+        return curr !== prev ? curr : Math.max(0, prev + 1);
+    }
+
+    const configs = [
+        { maxV: 10,  opMode: "mix" },
+        { maxV: 20,  opMode: "+" },
+        { maxV: 50,  opMode: "-" },
+        { maxV: 100, opMode: "mix" },
+    ];
+
+    for (const cfg of configs) {
+        let simPrev = 0, lastText = "", correctCnt = 0, wrongCnt = 0,
+            dupeCnt = 0, scoringErr = 0;
+
+        const first = simBuild("", cfg.maxV, cfg.opMode);
+        simPrev  = first.result;
+        lastText = norm(first.a, first.op, first.b);
+
+        for (let i = 0; i < turns; i++) {
+            const eq = simBuild(lastText, cfg.maxV, cfg.opMode);
+            const currNorm = norm(eq.a, eq.op, eq.b);
+
+            if (currNorm === lastText) dupeCnt++;
+
+            const useCorrect = Math.random() < 0.5;
+            const shown = useCorrect ? simPrev : simDecoy(simPrev, eq.result);
+
+            // Verify scoring: shown === simPrev iff useCorrect
+            if ((shown === simPrev) !== useCorrect) scoringErr++;
+
+            if (useCorrect) correctCnt++; else wrongCnt++;
+
+            lastText = currNorm;
+            simPrev  = eq.result;
+        }
+
+        console.log(
+            `maxVal=${cfg.maxV} op=${cfg.opMode}: ` +
+            `Doğru %${(correctCnt/turns*100).toFixed(1)} | ` +
+            `Yanlış %${(wrongCnt/turns*100).toFixed(1)} | ` +
+            `Ardışık aynı: ${dupeCnt} | Puanlama hatası: ${scoringErr}`
+        );
+    }
+};
 
 });
