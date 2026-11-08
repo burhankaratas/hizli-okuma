@@ -74,6 +74,49 @@ function buildEquation() {
     return { a, op, b, result, text: `${a} ${op} ${b}` };
 }
 
+function buildCorrectEquation(target) {
+    const ops = selectedOp === "mix" ? ["+", "-", "×"] : [selectedOp];
+    const shuffled = ops.slice().sort(() => Math.random() - 0.5);
+
+    for (const op of shuffled) {
+        if (op === "+") {
+            const aMin = Math.max(0, target - maxVal);
+            const aMax = Math.min(maxVal, target);
+            if (aMin > aMax) continue;
+            const a = getRandomInt(aMin, aMax);
+            const b = target - a;
+            if (b >= 0 && b <= maxVal) return { a, op, b, result: target, text: `${a} ${op} ${b}` };
+        } else if (op === "-") {
+            const bMax = maxVal - target;
+            if (bMax < 0) continue;
+            const b = getRandomInt(0, bMax);
+            const a = target + b;
+            if (a <= maxVal) return { a, op, b, result: target, text: `${a} ${op} ${b}` };
+        } else {
+            if (target === 0) {
+                const a = getRandomInt(0, maxVal);
+                return { a, op: "×", b: 0, result: 0, text: `${a} × 0` };
+            }
+            const factors = [];
+            for (let i = 1; i <= maxVal; i++) {
+                if (target % i === 0 && target / i <= maxVal) factors.push([i, target / i]);
+            }
+            if (factors.length === 0) continue;
+            const [a, b] = factors[getRandomInt(0, factors.length - 1)];
+            return { a, op: "×", b, result: target, text: `${a} × ${b}` };
+        }
+    }
+    return buildWrongEquation(target);
+}
+
+function buildWrongEquation(target) {
+    for (let i = 0; i < 100; i++) {
+        const eq = buildEquation();
+        if (eq.result !== target) return eq;
+    }
+    return buildEquation();
+}
+
 function start() {
     speed      = Number(speedSelect.value);
     maxVal     = Number(rangeSelect.value);
@@ -135,7 +178,7 @@ function showNextQuestion() {
     if (!exerciseActive) return;
     if (responseTimer) clearTimeout(responseTimer);
 
-    const eq = buildEquation();
+    const eq = Math.random() < 0.5 ? buildCorrectEquation(prevActual) : buildWrongEquation(prevActual);
     currentActual = eq.result;
 
     leftSideEl.textContent  = eq.text;
